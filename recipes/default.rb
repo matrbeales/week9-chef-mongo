@@ -23,3 +23,18 @@ end
 service("mongod") do
   action [:enable, :start]
 end
+
+template "/etc/mongod.conf" do
+  source "mongod.conf.erb"
+  variables(
+    port: node["mongod"]["port"],
+    bindIp: node["mongod"]["bindIp"]
+  )
+
+  notifies :restart, "service[mongod]"
+end
+
+template "/lib/systemd/system/mongod.service" do
+  source "mongod.service.erb"
+  notifies :restart, "service[mongod]"
+end
