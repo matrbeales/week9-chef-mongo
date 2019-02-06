@@ -19,14 +19,17 @@ describe 'mongo::default' do
       expect { chef_run }.to_not raise_error
     end
 
-    it 'should install mongodb' do
-      expect(chef_run).to install_package('mongodb')
+    it "should update all sources" do
+      expect(chef_run).to update_apt_update("update")
     end
 
-    it 'should install python' do
-      expect(chef_run).to install_package('python')
+    it "should add mongo to the sources list" do
+      expect(chef_run).to add_apt_repository("mongodb-org")
     end
 
-
+    it "should install mongod" do
+      expect(chef_run).to upgrade_package("mongodb-org")
+    end
   end
+
 end

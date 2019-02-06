@@ -3,13 +3,23 @@
 # Recipe:: default
 #
 # Copyright:: 2019, The Authors, All Rights Reserved.
-include_recipe 'apt'
-
-apt_repository 'mongodb' do
-  uri        'http://repo.mongodb.org/apt/ubuntu'
-  components ['mongodb']
+include_recipe("apt")
+apt_update("update") do
+  action :update
 end
 
-package 'mongodb'
+apt_repository("mongodb-org") do
+  uri "http://repo.mongodb.org/apt/ubuntu"
+  distribution "xenial/mongodb-org/3.2"
+  components ["multiverse"]
+  keyserver "hkp://keyserver.ubuntu.com:80"
+  key "EA312927"
+end
 
-# apt_update
+package("mongodb-org") do
+  action :upgrade
+end
+
+service("mongod") do
+  action [:enable, :start]
+end
